@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog, StringVar, OptionMenu, Text, ttk, simpledialog
 import webbrowser
-import subprocess
+
 
 class DorkNetTool:
     def __init__(self, root):
@@ -14,98 +14,106 @@ class DorkNetTool:
         self.create_widgets()
 
     def initialize_dorks(self):
-      return {
-        "Sensitive Directories": [
-            "intitle:index.of",
-            "inurl:backup",
-            "inurl:db",
-            "inurl:config",
-            "inurl:logs",
-            "inurl:phpinfo",
-            "inurl:ftp",
-        ],
-        "File Types": [
-            "filetype:pdf",
-            "filetype:xls",
-            "filetype:doc",
-            "filetype:docx",
-            "filetype:csv",
-            "filetype:xml",
-            "filetype:sql",
-            "filetype:json",
-        ],
-        "Error Messages": [
-            "intext:sql syntax error",
-            "intext:Warning: mysql_connect()",
-            "intext:Warning: pg_connect()",
-            "intext:Warning: include()",
-            "intext:Warning: require()",
-        ],
-        "Credentials and Keys": [
-            "intext:username",
-            "intext:password",
-            "inurl:env",
-            "inurl:git",
-            "intext:API key",
-            "inurl:credentials",
-        ],
-        "Cameras and IoT": [
-            "inurl:/view/index.shtml",
-            "intitle:Live View / AXIS",
-            "intitle:Live View / Network Camera",
-            "inurl:axis-cgi",
-            "inurl:viewerframe?mode=motion",
-            "intitle:Network Camera",
-        ],
-        "Vulnerable Servers": [
-            "inurl:phpmyadmin",
-            "inurl:wp-admin",
-            "intitle:phpMyAdmin",
-            "intext:wp-config.php",
-            "inurl:sql",
-        ],
-        "Other Sensitive Information": [
-            "intext:ssn",
-            "intext:credit card",
-            "intext:CVV",
-            "intext:passport",
-            "intext:confidential",
-            "intext:proprietary",
-        ],
-        "Exploit Specific": [
-            "inurl:/proc/self/cwd",
-            "inurl:/etc/passwd",
-            "inurl:cmd.exe",
-            "inurl:wp-login.php",
-            "inurl:phpinfo.php",
-            "inurl:/cgi-bin/",
-        ],
-    }
+        return {
+            "Sensitive Directories": [
+                "intitle:index.of",
+                "inurl:backup",
+                "inurl:db",
+                "inurl:config",
+                "inurl:logs",
+                "inurl:phpinfo",
+                "inurl:ftp",
+            ],
+            "File Types": [
+                "filetype:pdf",
+                "filetype:xls",
+                "filetype:doc",
+                "filetype:docx",
+                "filetype:csv",
+                "filetype:xml",
+                "filetype:sql",
+                "filetype:json",
+            ],
+            "Error Messages": [
+                "intext:sql syntax error",
+                "intext:Warning: mysql_connect()",
+                "intext:Warning: pg_connect()",
+                "intext:Warning: include()",
+                "intext:Warning: require()",
+            ],
+            "Credentials and Keys": [
+                "intext:username",
+                "intext:password",
+                "inurl:env",
+                "inurl:git",
+                "intext:API key",
+                "inurl:credentials",
+            ],
+            "Cameras and IoT": [
+                "inurl:/view/index.shtml",
+                "intitle:Live View / AXIS",
+                "intitle:Live View / Network Camera",
+                "inurl:axis-cgi",
+                "inurl:viewerframe?mode=motion",
+                "intitle:Network Camera",
+            ],
+            "Vulnerable Servers": [
+                "inurl:phpmyadmin",
+                "inurl:wp-admin",
+                "intitle:phpMyAdmin",
+                "intext:wp-config.php",
+                "inurl:sql",
+            ],
+            "Other Sensitive Information": [
+                "intext:ssn",
+                "intext:credit card",
+                "intext:CVV",
+                "intext:passport",
+                "intext:confidential",
+                "intext:proprietary",
+            ],
+            "Exploit Specific": [
+                "inurl:/proc/self/cwd",
+                "inurl:/etc/passwd",
+                "inurl:cmd.exe",
+                "inurl:wp-login.php",
+                "inurl:phpinfo.php",
+                "inurl:/cgi-bin/",
+            ],
+            "Public BBH": [
+                "inurl:/bug bounty",
+                "inurl:/security",
+                "inurl:/responsible disclosure",
+                "inurl:/responsible-disclosure/reward",
+                "inurl:/responsible-disclosure/swag",
+                "inurl:/responsible-disclosure/bounty",
+                "inurl:'/responsible disclosure' hoodie",
+                "responsible disclosure swag r=h:com",
+                "responsible disclosure:sites",
+                "responsible disclosure r=h:nl",
+                "site:*.gov.* 'responsible disclosure'",
+            ],
+        }
 
-        
     def create_widgets(self):
         top_frame = tk.Frame(self.root, bg='#000000')
         top_frame.pack(pady=10, padx=20, fill='x')
 
-        # Input for search term
         tk.Label(top_frame, text="Enter search term:", font=("Courier", 14), bg='#000000', fg='white').pack(side="left", padx=10)
         self.entry = tk.Entry(top_frame, width=40, font=("Courier", 14), borderwidth=2, relief="flat")
         self.entry.pack(side="left", padx=10)
 
-        # Browser selection
         self.browser_var = StringVar(value="default")
         tk.Label(top_frame, text="Browser:", font=("Courier", 14), bg='#000000', fg='white').pack(side="left", padx=10)
         browser_menu = OptionMenu(top_frame, self.browser_var, "default", "chrome", "firefox", "brave")
         browser_menu.config(font=("Courier", 12), bg='#00ff00', fg='black')
         browser_menu.pack(side="left", padx=10)
 
-        # Dork search filter
         tk.Label(top_frame, text="Search dork:", font=("Courier", 14), bg='#000000', fg='white').pack(side="left", padx=10)
         self.dork_search_entry = tk.Entry(top_frame, width=30, font=("Courier", 14), borderwidth=2, relief="flat")
         self.dork_search_entry.pack(side="left", padx=10)
         self.dork_search_entry.bind("<KeyRelease>", self.filter_dorks)
 
-        # Tabs for dork categories
         self.tabs = ttk.Notebook(self.root)
         self.tabs.pack(pady=10, padx=20, fill='both', expand=True)
 
@@ -126,15 +134,9 @@ class DorkNetTool:
 
             self.dork_listboxes[category] = listbox
 
-        # Add Dork button
-        tk.Button(self.root, text="Add More Dork", width=20, height=2, font=("Courier", 12),
-                  bg='#00ff00', fg='black', command=self.add_more_dork).pack(pady=10)
+        tk.Button(self.root, text="Add More Dork", width=20, height=2, font=("Courier", 12), bg='#00ff00', fg='black', command=self.add_more_dork).pack(pady=10)
+        tk.Button(self.root, text="Perform Search", width=20, height=2, font=("Courier", 12), bg='#00ff00', fg='black', command=self.perform_search).pack(pady=10)
 
-        # Search button
-        tk.Button(self.root, text="Perform Search", width=20, height=2, font=("Courier", 12),
-                  bg='#00ff00', fg='black', command=self.perform_search).pack(pady=10)
-
-        # Terminal output
         terminal_frame = tk.Frame(self.root, bg='#000000')
         terminal_frame.pack(pady=10, padx=20, fill='both', expand=True)
 
@@ -207,12 +209,8 @@ class DorkNetTool:
         self.terminal.insert(tk.END, f"{message}\n")
         self.terminal.see(tk.END)
 
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = DorkNetTool(root)
-
-    webbrowser.register('chrome', webbrowser.BackgroundBrowser("C:/Program Files/Google/Chrome/Application/chrome.exe %s"))
-    webbrowser.register('firefox', webbrowser.BackgroundBrowser("C:/Program Files/Mozilla Firefox/firefox.exe %s"))
-    webbrowser.register('brave', webbrowser.BackgroundBrowser("C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe %s"))
-
     root.mainloop()
