@@ -1,0 +1,7 @@
+tkinter
+openai
+requests
+pyttsx3
+pyautogui
+speechrecognition
+json
