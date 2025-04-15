@@ -1,0 +1,18 @@
+{
+  "ansh": {
+    "name": "Ansh Yadav",
+    "location": "Bhopal, India",
+    "skills": [
+      "Cybersecurity",
+      "OSINT",
+      "Python"
+    ],
+    "github": "https://github.com/CreativAnsh",
+    "twitter": "@CreativAnsh",
+    "education": {
+      "college": "Oriental College",
+      "university": "RGPV",
+      "location": "Raisen Road, Bhopal"
+    }
+  }
+}
